@@ -38,6 +38,18 @@ def calc_precision(iou, t):
 
 
 if __name__ == "__main__":
+    print('abc')
+    #for testing
+    detectorX = LandingDetector()
+    # read the image file
+    image = cv2.imread("test/img_test_02.jpg")
+    # display the image
+    # cv2.imshow("Image", image)
+    # cv2.waitKey(0)
+
+    result = detectorX.detect(image)
+    print(result)
+    #end testing
 
     input_folder = sys.argv[1]
     label_folder = sys.argv[2]
