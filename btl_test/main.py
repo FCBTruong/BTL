@@ -42,13 +42,12 @@ if __name__ == "__main__":
     #for testing
     detectorX = LandingDetector()
     # read the image file
-    image = cv2.imread("test/img_test_02.jpg")
+    image = cv2.imread("test/img_train_16.jpg")
     # display the image
     # cv2.imshow("Image", image)
     # cv2.waitKey(0)
 
     result = detectorX.detect(image)
-    print(result)
     #end testing
 
     input_folder = sys.argv[1]
