@@ -2,6 +2,7 @@ import torch
 import os
 import cv2
 import numpy as np
+import onnxruntime as rt
 
 class LandingDetector:
 
@@ -10,35 +11,30 @@ class LandingDetector:
         You should hard fix all the requirement parameters
         """
         self.name = 'LandingDetector'
-        print('load weight')
-        # Add the directory containing the models module to the PYTHONPATH
+    def detect(self, image):
+        # Load the YOLO model
+        model_file = 'model/best.onnx'
+        session = rt.InferenceSession(model_file)
 
-        self.model = torch.hub.load('ultralytics/yolov5', 'custom', 'model/best.pt')
+        # Get the names of the model's input nodes
+        input_names = [input.name for input in session.get_inputs()]
 
-        print('done load')
+        # Preprocess the image
+        input_size = (544, 544)
+        resized_image = cv2.resize(image, input_size)
+        input_data = np.transpose(resized_image, [2, 0, 1]) / 255.0
+        input_data = np.expand_dims(input_data, axis=0).astype('float32')
 
-    def detect(self, img):
-        # Resize image to match input dimensions of YOLOv5 model
-        image = cv2.resize(img, (544, 544))
-
-        # Convert image to NumPy array
-        image_array = np.array(image).transpose(2, 0, 1)
-
-        # Convert NumPy array to PyTorch tensor
-        image_tensor = torch.from_numpy(image_array).unsqueeze(0).float()
-
-        output = self.model(image_tensor)
-        # Extract object positions (X, Y), width, and height for the object with highest confidence score
-
-        # Get the top object detection result with the highest confidence score
-        top_result = max(output[0], key=lambda x: x[4])
-
-        # Extract object positions (X, Y), width, and height for the top object
-        object_class = top_result[8]
-        x, y, w, h = top_result[:4]
-        print(x, y, w, h)
-        print('finish detect')
-        return output
-        #return 100, 100, 150, 150
+        # Run inference
+        output = session.run([], {input_names[0]: input_data})
 
 
+        output_array = output[0]
+        max_confidence_idx = np.argmax(output_array[:, :, 4])
+        max_confidence_bbox = output_array[0, max_confidence_idx, :]
+        print(max_confidence_bbox)
+        x_min, y_min, x_max, y_max = max_confidence_bbox
+
+        return 100, 100, 150, 150
+
+        # Do something with the output
