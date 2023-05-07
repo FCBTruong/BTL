@@ -9,3 +9,5 @@ class LandingDetector:
     def detect(self, img):
 
         return 100, 100, 150, 150
+
+

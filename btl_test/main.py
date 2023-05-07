@@ -8,7 +8,7 @@ import sys
 import cv2
 import numpy as np
 
-from landing_detector import LandingDectector
+from landing_detector import LandingDetector
 
 def read_label(label_file):
     with open(label_file, "r") as f:
@@ -43,7 +43,7 @@ if __name__ == "__main__":
     label_folder = sys.argv[2]
 
     start_time = time.time()
-    detector = LandingDectector()
+    detector = LandingDetector()
     init_time = time.time() - start_time
     print("Run time in: %.2f s" % init_time)
 
