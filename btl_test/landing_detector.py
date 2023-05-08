@@ -33,8 +33,13 @@ class LandingDetector:
         max_confidence_idx = np.argmax(output_array[:, :, 4])
         max_confidence_bbox = output_array[0, max_confidence_idx, :]
         print(max_confidence_bbox)
-        x_min, y_min, x_max, y_max = max_confidence_bbox
+        x_center, y_center, width, height, _, _ = max_confidence_bbox
 
-        return 100, 100, 150, 150
+        print("result ", x_center / 540, y_center / 540, width / 540, height / 540)
+        x_min = x_center - width / 2
+        y_min = y_center - height / 2
+        x_max = x_center + width / 2
+        y_max = y_center + height / 2
+        return x_min, y_min, x_max, y_max
 
         # Do something with the output
